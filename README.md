@@ -1,5 +1,20 @@
 # Korgi.Trade-Lab
 
+[![License: MIT](https://img.shields.io/github/license/c0de4un/korgi-trade-lab)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/c0de4un/korgi-trade-lab)](https://github.com/c0de4un/korgi-trade-lab/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/c0de4un/korgi-trade-lab)](https://github.com/c0de4un/korgi-trade-lab/issues)
+
+[![Rust](https://img.shields.io/badge/Rust-2024-orange?logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Tokio](https://img.shields.io/badge/Tokio-async-black?logo=tokio&logoColor=white)](https://tokio.rs/)
+[![Axum](https://img.shields.io/badge/Axum-0.8-blue)](https://github.com/tokio-rs/axum)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-cache-DC382D?logo=redis&logoColor=white)](https://redis.io/)
+
+[![LOB](https://img.shields.io/badge/LOB-engine-2E7D32)](https://github.com/c0de4un/korgi-trade-lab)
+[![Backtesting](https://img.shields.io/badge/Backtesting-simulation-1565C0)](https://github.com/c0de4un/korgi-trade-lab)
+[![Trading](https://img.shields.io/badge/Trading-SaaS-6A1B9A)](https://github.com/c0de4un/korgi-trade-lab)
+
 **Korgi.Trade-Lab** is a SaaS platform for historical market simulation, Limit Order Book (LOB) engine, strategy backtesting, and external trading bot integration.
 
 The project is a **Cargo workspace** (modular monolith): shared domain crates plus two backend binaries and two Vue frontends. Focus areas: deterministic execution, strict resource isolation, and clear hexagonal boundaries.
