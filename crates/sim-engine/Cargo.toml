@@ -1,0 +1,18 @@
+[package]
+name = "sim-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Replay engine, SimGateway, latency and fee models"
+
+[dependencies]
+bot-protocol.workspace = true
+lob-core.workspace = true
+market-types.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

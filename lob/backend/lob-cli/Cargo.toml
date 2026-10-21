@@ -1,0 +1,23 @@
+[package]
+name = "lob-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "CLI for import, simulation, and benchmarks without full SaaS"
+
+[[bin]]
+name = "lob-cli"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+importers.workspace = true
+lob-core.workspace = true
+sim-engine.workspace = true
+storage.workspace = true
+
+[lints]
+workspace = true

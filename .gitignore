@@ -1,0 +1,31 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock.bak
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Market data chunks (runtime)
+/data/chunks/*
+!/data/chunks/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Node (frontends, later)
+node_modules/
+dist/
+*.local
+
+# Logs & coverage
+*.log
+coverage/
+lcov.info

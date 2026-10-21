@@ -1,0 +1,15 @@
+[package]
+name = "storage"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "PostgreSQL metadata and filesystem chunk storage ports"
+
+[dependencies]
+market-types.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

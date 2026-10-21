@@ -1,7 +1,9 @@
-# Korgi.Trade-Lab Makefile
-# Separates build, test, and run processes for independent modules.
+# Korgi.Trade-Lab Makefile — Cargo workspace targets from repository root.
 
-.PHONY: help init build-lob build-cabinet run-lob-dev run-cabinet-dev test-lob test-cabinet test-all lint fmt
+.PHONY: help init build build-lob build-cabinet run-lob-dev run-cabinet-dev \
+	test-lob test-cabinet test-all lint fmt infra-up infra-down
+
+COMPOSE := docker compose -f compose.local.yml
 
 help: ## Show this help message
 	@echo "Korgi.Trade-Lab Makefile"
@@ -11,54 +13,53 @@ help: ## Show this help message
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-init: ## Initialize project dependencies and tools
-	@echo "Initializing Rust toolchains and dependencies..."
-	cd lob/backend && cargo fetch
-	cd cabinet/backend && cargo fetch
+init: ## Fetch workspace dependencies
+	@echo "Fetching Cargo workspace dependencies..."
+	cargo fetch
 	@echo "Initialization complete."
 
 # ================= BUILD TARGETS =================
 
-build-lob: ## Build LOB Engine backend
-	@echo "Building LOB Engine..."
-	cd lob/backend && cargo build --release
+build: ## Build all workspace members
+	cargo build --workspace
 
-build-cabinet: ## Build Trader Cabinet backend
-	@echo "Building Trader Cabinet..."
-	cd cabinet/backend && cargo build --release
+build-lob: ## Build LOB server and CLI (release)
+	cargo build -p lob-server -p lob-cli --release
+
+build-cabinet: ## Build cabinet server and CLI (release)
+	cargo build -p cabinet-server -p cabinet-cli --release
 
 # ================= RUN TARGETS =================
 
-run-lob-dev: ## Run LOB Engine in development mode
-	@echo "Running LOB Engine (dev)..."
-	cd lob/backend && cargo run
+run-lob-dev: ## Run LOB server in development mode (default :8080)
+	cargo run -p lob-server
 
-run-cabinet-dev: ## Run Trader Cabinet in development mode
-	@echo "Running Trader Cabinet (dev)..."
-	cd cabinet/backend && cargo run
+run-cabinet-dev: ## Run cabinet server in development mode (default :8081)
+	cargo run -p cabinet-server
 
 # ================= TEST TARGETS =================
 
-test-lob: ## Run tests for LOB Engine
-	@echo "Testing LOB Engine..."
-	cd lob/backend && cargo test
+test-lob: ## Run LOB-related package tests
+	cargo test -p lob-server -p lob-cli -p lob-core -p sim-engine -p importers -p market-types -p bot-protocol -p storage -p fix-codec
 
-test-cabinet: ## Run tests for Trader Cabinet
-	@echo "Testing Trader Cabinet..."
-	cd cabinet/backend && cargo test
+test-cabinet: ## Run cabinet-related package tests
+	cargo test -p cabinet-server -p cabinet-cli -p storage -p market-types -p bot-protocol
 
-test-all: test-lob test-cabinet ## Run tests for all modules
+test-all: ## Run all workspace tests
+	cargo test --workspace
 
 # ================= LINT & FORMAT =================
 
-lint: ## Run linters (clippy) on all modules
-	@echo "Linting LOB Engine..."
-	cd lob/backend && cargo clippy -- -D warnings
-	@echo "Linting Trader Cabinet..."
-	cd cabinet/backend && cargo clippy -- -D warnings
+lint: ## Run clippy with warnings denied
+	cargo clippy --workspace -- -D warnings
 
-fmt: ## Format code in all modules
-	@echo "Formatting LOB Engine..."
-	cd lob/backend && cargo fmt
-	@echo "Formatting Trader Cabinet..."
-	cd cabinet/backend && cargo fmt
+fmt: ## Format all Rust sources
+	cargo fmt --all
+
+# ================= INFRASTRUCTURE =================
+
+infra-up: ## Start PostgreSQL and Redis (local compose)
+	$(COMPOSE) up -d
+
+infra-down: ## Stop local infrastructure
+	$(COMPOSE) down

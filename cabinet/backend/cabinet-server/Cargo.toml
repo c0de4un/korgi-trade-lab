@@ -1,0 +1,32 @@
+[package]
+name = "cabinet-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Trader cabinet: identity, quotas, simulation orchestration"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "cabinet-server"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+bot-protocol.workspace = true
+market-types.workspace = true
+storage.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+tower.workspace = true
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+
+[lints]
+workspace = true

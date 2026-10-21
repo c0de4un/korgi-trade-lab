@@ -1,0 +1,15 @@
+[package]
+name = "importers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Market data import adapters (MOEX, Binance, generic)"
+
+[dependencies]
+market-types.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

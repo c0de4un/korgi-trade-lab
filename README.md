@@ -1,63 +1,94 @@
 # Korgi.Trade-Lab
 
-**Korgi.Trade-Lab** is a comprehensive SaaS platform for historical market simulation, Limit Order Book (LOB) engine, strategy backtesting, and external trading bot integration. 
+**Korgi.Trade-Lab** is a SaaS platform for historical market simulation, Limit Order Book (LOB) engine, strategy backtesting, and external trading bot integration.
 
-The project is designed as a modular monolith, focusing on high performance, deterministic execution, and strict resource isolation. It serves as a production-oriented tool for quantitative development, system engineering, and strategy research.
+The project is a **Cargo workspace** (modular monolith): shared domain crates plus two backend binaries and two Vue frontends. Focus areas: deterministic execution, strict resource isolation, and clear hexagonal boundaries.
 
-## 🏗 Architecture & Modules
+License: **MIT**. Architecture decisions: [`docs/adr/`](docs/adr/).
 
-The repository is structured as a collection of independent backend services and frontend applications:
+## Architecture & Modules
 
-*   **LOB Engine (`lob/backend`)**: Core L2 Market-by-Price engine, Replay Engine, and Execution Simulator. Built with Rust (Axum, Tokio, SQLx).
-*   **Trader Cabinet (`cabinet/backend`)**: User management, simulation orchestration, resource limits, and SaaS administration. Built with Rust (Axum, Tokio, SQLx).
-*   **Frontends (`lob/frontend`, `cabinet/frontend`)**: Vue 3 + TypeScript + Vite SPAs (Client and Admin dashboards).
-
-## 💻 Hardware Requirements
-
-The system is optimized for cost-effective deployment. Minimum recommended server specifications for production:
-*   **CPU**: 2 vCPU
-*   **RAM**: 2 GB (Strict memory budgets are applied per simulation task)
-*   **Disk**: SSD recommended for historical market data chunk storage
-
-## 🛠 Software Requirements
-
-*   **Rust**: 2024 Edition (Stable)
-*   **Node.js**: 22 LTS (for frontend tooling)
-*   **Database**: PostgreSQL 16+
-*   **Cache/Queue**: Redis
-*   **Tools**: Docker, Docker Compose, Make, Git
-
-## 🚀 Quick Start & Commands
-
-We use a `Makefile` to abstract build, test, and run commands. 
-
-### Build Modules
-To build the backend binaries separately:
-```bash
-make build-lob
-make build-cabinet
+```
+korgi-trade-lab/
+├── crates/                    # Shared Rust libraries
+│   ├── market-types/          # Canonical events, instrument specs
+│   ├── lob-core/              # Order book + matching (no I/O)
+│   ├── importers/             # Market data adapters
+│   ├── sim-engine/            # Replay / SimGateway
+│   ├── bot-protocol/          # Bot REST DTOs
+│   ├── storage/               # PG metadata + FS chunk ports
+│   └── fix-codec/             # FIX stub (post-MVP)
+├── lob/backend/
+│   ├── lob-server/            # LOB HTTP API (:8080)
+│   └── lob-cli/               # import / sim / bench without SaaS
+├── cabinet/backend/
+│   ├── cabinet-server/        # Identity, quotas, orchestration (:8081)
+│   └── cabinet-cli/           # Admin / dev utilities
+├── lob/frontend/              # Vue SPA (client)
+└── cabinet/frontend/          # Vue SPA (admin)
 ```
 
-### Run in Development
-To start the backend services in development mode:
+- **LOB Engine** (`lob-server`): L2 MBP engine, replay, execution simulator, bot REST; gRPC/WS/FIX are stubs.
+- **Trader Cabinet** (`cabinet-server`): users, simulation orchestration, resource limits, admin API.
+- **Storage**: PostgreSQL for metadata; filesystem chunks under `data/chunks/` (see [ADR 0002](docs/adr/0002-chunk-storage-fs.md)).
+
+## Hardware Requirements
+
+Minimum recommended server specifications for production:
+
+* **CPU**: 2 vCPU
+* **RAM**: 2 GB (strict memory budgets per simulation task)
+* **Disk**: SSD recommended for historical market data chunk storage
+
+## Software Requirements
+
+* **Rust**: 2024 Edition (Stable), see `rust-toolchain.toml`
+* **Node.js**: 22 LTS (for frontend tooling)
+* **Database**: PostgreSQL 16+
+* **Cache/Queue**: Redis
+* **Tools**: Docker, Docker Compose, Make, Git
+
+## Quick Start
+
+### Infrastructure
+
 ```bash
-make run-lob-dev
-make run-cabinet-dev
+make infra-up
+# or: docker compose -f compose.local.yml up -d
 ```
 
-### Testing & Linting
-Tests and builds are strictly separated:
+### Build & run backends
+
 ```bash
-make test-lob
-make test-cabinet
+make build
+make run-lob-dev       # http://127.0.0.1:8080/healthz
+make run-cabinet-dev   # http://127.0.0.1:8081/healthz
+```
+
+Override bind addresses with `LOB_SERVER_ADDR` / `CABINET_SERVER_ADDR`.
+
+### CLI
+
+```bash
+cargo run -p lob-cli -- --help
+cargo run -p cabinet-cli -- --help
+```
+
+### Testing & linting
+
+```bash
 make test-all
 make lint
+make fmt
 ```
 
-### Infrastructure (Local Development)
-To spin up the required infrastructure services (PostgreSQL, Redis) using Docker Compose:
+### Docker image (optional)
+
 ```bash
-docker compose up -d
+docker build --build-arg BIN=lob-server -t korgi-lob .
+docker build --build-arg BIN=cabinet-server -t korgi-cabinet .
 ```
 
-(Note: Production deployment relies on systemd and static binaries, Docker is primarily for local dev and CI).
+Application services in `compose.local.yml` are commented until you enable them after the first image build.
+
+Production target remains static musl binaries + systemd; Docker is primarily for local development and CI.

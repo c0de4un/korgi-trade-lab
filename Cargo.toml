@@ -1,0 +1,59 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/market-types",
+    "crates/lob-core",
+    "crates/importers",
+    "crates/sim-engine",
+    "crates/bot-protocol",
+    "crates/storage",
+    "crates/fix-codec",
+    "lob/backend/lob-server",
+    "lob/backend/lob-cli",
+    "cabinet/backend/cabinet-server",
+    "cabinet/backend/cabinet-cli",
+]
+default-members = [
+    "lob/backend/lob-server",
+    "lob/backend/lob-cli",
+    "cabinet/backend/cabinet-server",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/c0de4un/korgi-trade-lab"
+rust-version = "1.85"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[workspace.dependencies]
+# Internal crates
+market-types = { path = "crates/market-types", version = "0.1.0" }
+lob-core = { path = "crates/lob-core", version = "0.1.0" }
+importers = { path = "crates/importers", version = "0.1.0" }
+sim-engine = { path = "crates/sim-engine", version = "0.1.0" }
+bot-protocol = { path = "crates/bot-protocol", version = "0.1.0" }
+storage = { path = "crates/storage", version = "0.1.0" }
+fix-codec = { path = "crates/fix-codec", version = "0.1.0" }
+
+# External dependencies
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+uuid = { version = "1", features = ["v7", "serde"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time", "signal"] }
+axum = "0.8"
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "migrate", "uuid", "chrono"] }
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+proptest = "1"
+criterion = "0.5"
+tower = { version = "0.5", features = ["util"] }
