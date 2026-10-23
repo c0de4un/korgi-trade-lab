@@ -47,6 +47,10 @@ korgi-trade-lab/
 - **Trader Cabinet** (`cabinet-server`): users, simulation orchestration, resource limits, admin API.
 - **Storage**: PostgreSQL for metadata; filesystem chunks under `data/chunks/` (see [ADR 0002](docs/adr/0002-chunk-storage-fs.md)).
 
+## Screenshots
+### LOB Admin
+![Login page (light theme)](docs/lob_admin_login_light.jpg)
+
 ## Hardware Requirements
 
 Minimum recommended server specifications for production:

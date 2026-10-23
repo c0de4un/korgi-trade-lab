@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-surface: 248 250 252;
+  --color-surface-muted: 241 245 249;
+  --color-surface-elevated: 255 255 255;
+  --color-ink: 15 23 42;
+  --color-ink-muted: 100 116 139;
+  --color-accent: 13 148 136;
+  --color-accent-soft: 204 251 241;
+  --color-line: 226 232 240;
+}
+
+html.dark {
+  --color-surface: 15 23 42;
+  --color-surface-muted: 30 41 59;
+  --color-surface-elevated: 30 41 59;
+  --color-ink: 241 245 249;
+  --color-ink-muted: 148 163 184;
+  --color-accent: 45 212 191;
+  --color-accent-soft: 19 78 74;
+  --color-line: 51 65 85;
+}
+
+@layer base {
+  html,
+  body,
+  #app {
+    @apply min-h-full;
+  }
+
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-950;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-lg border border-line bg-surface-elevated px-3 py-2 text-sm text-ink transition hover:bg-surface-muted;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border border-line bg-surface-elevated px-3 py-2.5 text-sm text-ink outline-none ring-accent transition placeholder:text-ink-muted focus:ring-2;
+  }
+
+  .card-panel {
+    @apply rounded-2xl border border-line bg-surface-elevated p-6 shadow-sm;
+  }
+}
