@@ -2,6 +2,15 @@
 
 use axum::{Router, routing::get};
 
+pub mod auth;
+pub mod infrastructure;
+pub mod user;
+
+mod app_state;
+
+pub use app_state::AppState;
+pub use infrastructure::db::{DbConfig, create_pool, load_env_file, run_migrations};
+
 // Workspace wiring for later milestones (REST adapters, stubs).
 const _: fn() = || {
     let _ = std::any::type_name::<bot_protocol::BotProtocolError>();
@@ -12,8 +21,10 @@ const _: fn() = || {
 };
 
 /// Build the HTTP router for the LOB server.
-pub fn app() -> Router {
-    Router::new().route("/healthz", get(healthz))
+pub fn app(state: AppState) -> Router {
+    Router::new()
+        .route("/healthz", get(healthz))
+        .with_state(state)
 }
 
 async fn healthz() -> &'static str {
@@ -22,26 +33,10 @@ async fn healthz() -> &'static str {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use axum::{
-        body::Body,
-        http::{Request, StatusCode},
-    };
-    use tower::ServiceExt;
+    use super::healthz;
 
     #[tokio::test]
     async fn healthz_returns_ok() {
-        let app = app();
-        let response = app
-            .oneshot(
-                Request::builder()
-                    .uri("/healthz")
-                    .body(Body::empty())
-                    .expect("request"),
-            )
-            .await
-            .expect("response");
-
-        assert_eq!(response.status(), StatusCode::OK);
+        assert_eq!(healthz().await, "ok");
     }
 }
