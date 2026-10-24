@@ -1,7 +1,9 @@
 //! LOB engine server binary entrypoint.
 
 use anyhow::Context;
-use lob_server::{AppState, DbConfig, app, create_pool, load_env_file, run_migrations};
+use lob_server::{
+    AppState, DbConfig, RedisConfig, app, connect_redis, create_pool, load_env_file, run_migrations,
+};
 use tokio::net::TcpListener;
 use tracing::info;
 
@@ -21,7 +23,12 @@ async fn main() -> anyhow::Result<()> {
     let pool = create_pool(&db_config).await?;
     run_migrations(&pool).await?;
 
-    let state = AppState { pool };
+    let redis_config = RedisConfig::from_env().context("invalid redis configuration")?;
+    let redis = connect_redis(&redis_config)
+        .await
+        .context("failed to connect to Redis")?;
+
+    let state = AppState::new(pool, redis);
     let addr = std::env::var("LOB_SERVER_ADDR").unwrap_or_else(|_| "127.0.0.1:8080".into());
     let listener = TcpListener::bind(&addr)
         .await

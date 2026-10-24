@@ -10,7 +10,7 @@ mod app_state;
 
 pub use app_state::AppState;
 pub use infrastructure::db::{DbConfig, create_pool, load_env_file, run_migrations};
-pub use infrastructure::redis::RedisConfig;
+pub use infrastructure::redis::{RedisConfig, connect as connect_redis};
 
 // Workspace wiring for later milestones (REST adapters, stubs).
 const _: fn() = || {
