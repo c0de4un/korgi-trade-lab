@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM auth_tokens\n            WHERE entity_type = $1 AND entity_id = $2\n            RETURNING value\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "value",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int2",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "17de2b94861e113d34490377f797a73cfdd3f82c60f5bac9337799bb7f2a3998"
+}

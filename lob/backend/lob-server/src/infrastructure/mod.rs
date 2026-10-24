@@ -1,3 +1,4 @@
-//! Infrastructure adapters (DB, filesystem, external services).
+//! Infrastructure adapters (DB, Redis, filesystem, external services).
 
 pub mod db;
+pub mod redis;
