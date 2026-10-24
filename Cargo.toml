@@ -59,3 +59,4 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 proptest = "1"
 criterion = "0.5"
 tower = { version = "0.5", features = ["util"] }
+argon2 = "0.5"
